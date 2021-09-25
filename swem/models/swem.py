@@ -9,6 +9,11 @@ class Swem(nn.Module):
     """Simple Word Embedding model (see
     [Baselines need more love](https://arxiv.org/abs/1808.09843)).
 
+    The model consists of an embedding layer, a feed forward network that is applied
+    separately to each word vector, a pooling layer that pools the vectors belonging to
+    the same text into a single vector, and another feed forward network that is applied
+    to this pooled vector.
+
     Args:
         embedding (nn.Embedding): The embedding layer used by the model.
         pooling_layer (nn.Module): The pooling layer to be used by the model.
@@ -18,6 +23,10 @@ class Swem(nn.Module):
         feed forward network applied to the output of the pooling layer.
         dropout (float): Dropout probability after each layer in both feed forward
         subnetworks.
+
+    Shapes:
+        Input: (batch_size, seq_len, dim)
+        Output: (batch_size, dim)
     """
 
     def __init__(
@@ -34,12 +43,12 @@ class Swem(nn.Module):
         if pre_pooling_dims is None:
             self.pre_pooling_trafo = nn.Identity()
         else:
-            dims = [embedding.embedding_dim, *pre_pooling_dims]
+            pre_dims = [embedding.embedding_dim, *pre_pooling_dims]
             self.pre_pooling_trafo = nn.Sequential(
                 *chain(
                     *[
                         (nn.Linear(dim_in, dim_out), nn.ReLU(), nn.Dropout(dropout))
-                        for dim_in, dim_out in zip(dims[:-1], dims[1:])
+                        for dim_in, dim_out in zip(pre_dims[:-1], pre_dims[1:])
                     ]
                 )
             )
@@ -55,15 +64,15 @@ class Swem(nn.Module):
             if len(post_pooling_dims) == 1:
                 self.post_pooling_trafo = nn.Linear(pooling_dim, post_pooling_dims[0])
             else:
-                dims = [pooling_dim, *post_pooling_dims[:-1]]
-                self.pre_pooling_trafo = nn.Sequential(
+                post_dims = [pooling_dim, *post_pooling_dims[:-1]]
+                self.post_pooling_trafo = nn.Sequential(
                     *chain(
                         *[
                             (nn.Linear(dim_in, dim_out), nn.ReLU(), nn.Dropout(dropout))
-                            for dim_in, dim_out in zip(dims[:-1], dims[1:])
+                            for dim_in, dim_out in zip(post_dims[:-1], post_dims[1:])
                         ]
                     ),
-                    torch.nn.Linear(dims[-1], post_pooling_dims[-1]),
+                    torch.nn.Linear(post_dims[-1], post_pooling_dims[-1]),
                 )
 
     def forward(self, input: torch.Tensor) -> torch.FloatTensor:
