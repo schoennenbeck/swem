@@ -1,0 +1,15 @@
+repos:
+  - repo: local
+    hooks: 
+      - id: isort
+        name: Sorting imports
+        description: Sort all python import statements.
+        entry: isort -rc -y .
+        language: python
+        types: [python]
+      - id: black
+        name: Format code
+        description: Formal all python code using black.
+        entry: black -q .
+        language: python
+        types: [python]
