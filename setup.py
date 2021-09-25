@@ -7,6 +7,8 @@ with open("requirements.txt", "r", encoding="utf-8") as f:
         req = line.split("#", 1)[0].strip()
         if req and not req.startswith("--"):
             requires.append(req)
+with open("README.md", "r", encoding="utf-8") as f:
+    long_description = f.read()
 
 setup(
     name="swem",
@@ -14,9 +16,11 @@ setup(
     author="Sebastian Schönnenbeck",
     author_email="schoennenbeck@gmail.com",
     description="Pytorch implementation of the simple word embedding model.",
+    long_description=long_description,
+    long_description_content_type="text/markdown",
     packages=find_packages(exclude=["tests"]),
     install_requires=requires,
-    license="LICENSE",
+    license="MIT",
     python_requires=">=3.8",
     extra_require={
         "dev": [
