@@ -4,7 +4,7 @@ repos:
       - id: isort
         name: Sorting imports
         description: Sort all python import statements.
-        entry: isort -rc -y .
+        entry: isort -rc .
         language: python
         types: [python]
       - id: black

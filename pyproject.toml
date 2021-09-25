@@ -9,7 +9,7 @@ include_trailing_comma = true
 force_grid_wrap = 0
 line_length = 88
 skip_gitignore = true
-known_first_party = swem
+known_first_party = "swem"
 
 [tool.mypy]
 python_version = 3.8

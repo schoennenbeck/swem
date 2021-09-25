@@ -26,5 +26,5 @@ setup(
             "pre-commit",
             "pytest",
         ]
-    }
+    },
 )
