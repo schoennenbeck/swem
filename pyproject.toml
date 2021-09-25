@@ -14,4 +14,10 @@ known_first_party = "swem"
 [tool.mypy]
 python_version = 3.8
 warn_return_any = true
-warn_unused_config = true
+warn_unused_configs = true
+
+[[tool.mypy.overrides]]
+module = [
+    "setuptools"
+]
+ignore_missing_imports = true

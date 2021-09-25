@@ -18,7 +18,9 @@ def to_device(
         device (Union[str, torch.device]): The target device.
         non_tensors (str, optional): A string describing the behaviour of the function
         when a non-tensor is encountered. If 'error' raises a ValueError, if 'ignore'
-        the value is returned as is, if 'drop' the value is not included in the output.
+        the value is returned as is, if 'drop' the value is not included in the output
+        (Note that this may subtly change the nested structure of the output since lists
+        and tuples may be shorter than in the input and dicts may be missing keys).
         Defaults to "error".
 
     Raises:
