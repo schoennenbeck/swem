@@ -15,6 +15,7 @@ setup(
     version="0.1.1",
     author="Sebastian Schönnenbeck",
     author_email="schoennenbeck@gmail.com",
+    url="https://github.com/schoennenbeck/swem",
     description="Pytorch implementation of the simple word embedding model.",
     long_description=long_description,
     long_description_content_type="text/markdown",
