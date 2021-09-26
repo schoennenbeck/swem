@@ -1,10 +1,10 @@
 repos:
   - repo: local
-    hooks: 
+    hooks:
       - id: isort
         name: Sorting imports
         description: Sort all python import statements.
-        entry: isort -rc .
+        entry: isort .
         language: python
         types: [python]
       - id: black
