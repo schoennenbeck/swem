@@ -36,7 +36,7 @@ jobs:
 
       # Run pytest
       - name: Run tests
-        run: pytest --cov=swem
+        run: pytest --cov=swem tests/
 
       - name: Publish coverage results
         run: coveralls --service=github
