@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: CI
+name: Test on main branch
 
 # Controls when the workflow will run
 on:
@@ -36,4 +36,9 @@ jobs:
 
       # Run pytest
       - name: Run tests
-        run: pytest
+        run: pytest --cov
+
+      - name: Publish coverage results
+        run: coveralls --service=github
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

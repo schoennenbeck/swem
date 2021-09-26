@@ -23,6 +23,9 @@ setup(
             "mypy",
             "pre-commit",
             "pytest",
+            "pytest-cov",
+            "coveralls",
+            "coverage",
         ]
     },
 )
