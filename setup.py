@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as f:
 
 setup(
     name="pytorch-swem",
-    version="0.1.1",
+    version="0.1.2",
     author="Sebastian Schönnenbeck",
     author_email="schoennenbeck@gmail.com",
     url="https://github.com/schoennenbeck/swem",
