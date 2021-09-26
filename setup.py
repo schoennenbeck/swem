@@ -16,7 +16,7 @@ setup(
     install_requires=["torch >= 1.7.1"],
     license="MIT",
     python_requires=">=3.8",
-    extra_require={
+    extras_require={
         "dev": [
             "black",
             "isort",
