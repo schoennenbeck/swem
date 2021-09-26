@@ -17,8 +17,10 @@ class WordDropEmbedding(nn.Embedding):
 
     def __init__(self, *args, p: float, **kwargs):
         super().__init__(*args, **kwargs)
-        if p < 0:
-            raise ValueError(f"Dropout probability must be non-negative, got {p}")
+        if p < 0 or p >= 1:
+            raise ValueError(
+                f"Dropout probability must be non-negative and less than 1, got {p}"
+            )
         self.p = p
 
     def forward(self, input: torch.Tensor) -> torch.FloatTensor:
