@@ -11,7 +11,7 @@ with open("README.md", "r", encoding="utf-8") as f:
     long_description = f.read()
 
 setup(
-    name="swem",
+    name="pytorch-swem",
     version="0.1.1",
     author="Sebastian Schönnenbeck",
     author_email="schoennenbeck@gmail.com",
