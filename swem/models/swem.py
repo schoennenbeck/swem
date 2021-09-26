@@ -4,6 +4,8 @@ from typing import Optional, Tuple
 import torch
 from torch import nn
 
+from swem.models.pooling import SwemPoolingLayer
+
 
 class Swem(nn.Module):
     """Simple Word Embedding model (see
@@ -32,7 +34,7 @@ class Swem(nn.Module):
     def __init__(
         self,
         embedding: nn.Embedding,
-        pooling_layer: nn.Module,
+        pooling_layer: SwemPoolingLayer,
         pre_pooling_dims: Optional[Tuple[int, ...]] = None,
         post_pooling_dims: Optional[Tuple[int, ...]] = None,
         dropout: float = 0.2,
@@ -41,7 +43,7 @@ class Swem(nn.Module):
         self.embedding = embedding
         self.pooling_layer = pooling_layer
         if pre_pooling_dims is None:
-            self.pre_pooling_trafo = nn.Identity()
+            self.pre_pooling_trafo: nn.Module = nn.Identity()
         else:
             pre_dims = [embedding.embedding_dim, *pre_pooling_dims]
             self.pre_pooling_trafo = nn.Sequential(
@@ -54,7 +56,7 @@ class Swem(nn.Module):
             )
 
         if post_pooling_dims is None:
-            self.post_pooling_trafo = nn.Identity()
+            self.post_pooling_trafo: nn.Module = nn.Identity()
         else:
             pooling_dim = (
                 embedding.embedding_dim
