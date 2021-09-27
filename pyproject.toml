@@ -1,3 +1,12 @@
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "pytorch-swem"
+authors = [{name = "Sebastian Schönnenbeck", email = "schoennenbeck@gmail.com"}]
+dynamic = ["version", "description"]
+
 [tool.black]
 line-length = 88
 target-version = ["py38"]
