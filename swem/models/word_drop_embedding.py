@@ -14,6 +14,24 @@ class WordDropEmbedding(nn.Embedding):
         p (float): Probability with which to drop words (if 0 this layer behaves
           just like a usual embedding layer).
         args/kwargs: Other args and kwargs are handled by nn.Embedding.
+
+    Examples::
+
+        >>> emb = WordDropEmbedding(10, 2, p=0.3)
+        >>> input = torch.arange(0, 10, dtype=torch.int64)
+        >>> output = emb(input)
+        >>> print(output)
+        tensor([[-0.8393,  1.3216],
+                [-0.3652,  0.2879],
+                [ 0.1899,  2.2358],
+                [ 1.7776, -1.8437],
+                [-0.6406,  0.7939],
+                [ 1.0874, -3.2290],
+                [ 0.0000, -0.0000],
+                [ 0.0000,  0.0000],
+                [-0.9666,  1.0100],
+                [-0.2444, -2.2618]], grad_fn=<DivBackward0>)
+
     """
 
     def __init__(self, *args, p: float, **kwargs):

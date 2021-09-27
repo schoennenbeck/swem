@@ -33,6 +33,15 @@ def to_device(
     Returns:
         Any: Same type and nested structure as the input but with all tensors
         on the given device.
+
+    Examples:
+        >>> x = torch.tensor([1.0])
+        >>> y = torch.tensor([2.0])
+        >>> to_device([x, (x, y), {"x": x, "y": y}])
+        [tensor([1.], device='cuda:0'),
+        (tensor([1.], device='cuda:0'), tensor([2.], device='cuda:0')),
+        {'x': tensor([1.], device='cuda:0'), 'y': tensor([2.], device='cuda:0')}]
+
     """
     if isinstance(tensors, torch.Tensor):
         return tensors.to(device=device)

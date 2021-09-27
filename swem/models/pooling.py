@@ -1,4 +1,4 @@
-"""Pooling layers."""
+"""A collection of pooling layers with a common API."""
 from typing import Optional
 
 import torch

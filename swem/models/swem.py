@@ -1,4 +1,4 @@
-"""The actual SWEM-Model."""
+"""Implementation of the Simple Word Embedding Modell."""
 
 from itertools import chain
 from typing import Optional, Tuple

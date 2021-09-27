@@ -130,3 +130,6 @@ dmypy.json
 
 # Experimental notebooks
 experiments/
+
+# Dev setup
+.vscode/

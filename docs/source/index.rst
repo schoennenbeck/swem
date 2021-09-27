@@ -9,18 +9,18 @@ Both the package and the documentation are currently under development.
 .. toctree::
    :maxdepth: 2
    :caption: Usage
-   
+
    usage/installation.md
 
-.. toctree::
-   :maxdepth: 2
-   :caption: API Documentation
+API 
+~~~
 
-   api/swem.models.pooling.rst
-   api/swem.models.swem.rst
-   api/swem.models.word_drop_embedding.rst
-   api/swem.torch_utils.rst
+.. autosummary::
+    :toctree: api
+    :caption: API
 
+    swem.models
+    swem.torch_utils
 
 Indices and tables
 ==================

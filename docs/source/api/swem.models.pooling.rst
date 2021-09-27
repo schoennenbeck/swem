@@ -1,7 +1,16 @@
-models.pooling
+pooling
 ==============
 
 .. automodule:: swem.models.pooling
+
+.. autosummary::
+    :nosignatures:
+
+    swem.models.pooling.SwemPoolingLayer
+    swem.models.pooling.AttentionPooling
+    swem.models.pooling.HierarchicalPooling
+    swem.models.pooling.MaxPooling
+    swem.models.pooling.MeanPooling
 
 SwemPoolingLayer
 ~~~~~~~~~~~~~~~~
