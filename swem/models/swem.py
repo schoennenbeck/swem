@@ -1,3 +1,5 @@
+"""The actual SWEM-Model."""
+
 from itertools import chain
 from typing import Optional, Tuple
 
@@ -9,7 +11,7 @@ from swem.models.pooling import SwemPoolingLayer
 
 class Swem(nn.Module):
     """Simple Word Embedding model (see
-    [Baselines need more love](https://arxiv.org/abs/1808.09843)).
+    `Baselines need more love <https://arxiv.org/abs/1808.09843>`_ ).
 
     The model consists of an embedding layer, a feed forward network that is applied
     separately to each word vector, a pooling layer that pools the vectors belonging to
@@ -20,15 +22,18 @@ class Swem(nn.Module):
         embedding (nn.Embedding): The embedding layer used by the model.
         pooling_layer (nn.Module): The pooling layer to be used by the model.
         pre_pooling_dims (Optional[Tuple[int, ...]]): Intermediate dimensions for the
-        feed forward network applied to the input.
+          feed forward network applied to the input.
         post_pooling_dims (Optional[Tuple[int, ...]]): Intermediate dimensions for the
-        feed forward network applied to the output of the pooling layer.
+          feed forward network applied to the output of the pooling layer.
         dropout (float): Dropout probability after each layer in both feed forward
-        subnetworks.
+          subnetworks.
 
     Shapes:
-        Input: (batch_size, seq_len, dim)
-        Output: (batch_size, dim)
+        - input: :math:`(\\text{batch_size}, \\text{seq_len})`
+        - output: :math:`(\\text{batch_size}, \\text{enc_dim})`, where
+          :math:`\\text{enc_dim}` is the last of the post_pooling_dims (if given,
+          otherwise the last of the pre_pooling_dims or failing that the
+          embedding_dimension).
     """
 
     def __init__(

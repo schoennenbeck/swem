@@ -1,3 +1,5 @@
+"""Some addtional utilities."""
+
 from typing import Any, Union
 
 import torch
@@ -14,18 +16,18 @@ def to_device(
     transfered to the given device.
 
     Args:
-        tensors (Any): The container of (eventyally) tensors to be transfered.
+        tensors (Any): The container of (eventually) tensors to be transfered.
         device (Union[str, torch.device]): The target device.
         non_tensors (str, optional): A string describing the behaviour of the function
-        when a non-tensor is encountered. If 'error' raises a ValueError, if 'ignore'
-        the value is returned as is, if 'drop' the value is not included in the output
-        (Note that this may subtly change the nested structure of the output since lists
-        and tuples may be shorter than in the input and dicts may be missing keys).
-        Defaults to "error".
+          when a non-tensor is encountered. If 'error' raises a ValueError, if 'ignore'
+          the value is returned as is, if 'drop' the value is not included in the output
+          (Note that this may subtly change the nested structure of the output since
+          lists and tuples may be shorter than in the input and dicts may be missing
+          keys). Defaults to "error".
 
     Raises:
         ValueError: If 'non_tensors' is 'error' and a value not of type list, tuple,
-        dict, or tensor is encountered.
+          dict, or tensor is encountered.
         ValueError: If an unsupported option for 'non_tensor' is given.
 
     Returns:

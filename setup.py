@@ -26,6 +26,7 @@ setup(
             "pytest-cov",
             "coveralls",
             "coverage",
-        ]
+        ],
+        "docs": ["sphinx", "myst-parser", "sphinx-rtd-theme"],
     },
 )

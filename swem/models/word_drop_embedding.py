@@ -1,3 +1,4 @@
+"""Embedding layer with word-drop regularization."""
 import torch
 from torch import nn
 
@@ -11,8 +12,8 @@ class WordDropEmbedding(nn.Embedding):
 
     Args:
         p (float): Probability with which to drop words (if 0 this layer behaves
-        just like a usual embedding layer).
-        *args, **kwargs: Same as for the usual nn.Embedding.
+          just like a usual embedding layer).
+        args/kwargs: Other args and kwargs are handled by nn.Embedding.
     """
 
     def __init__(self, *args, p: float, **kwargs):
