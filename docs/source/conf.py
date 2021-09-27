@@ -28,7 +28,7 @@ intersphinx_disabled_domains = ["std"]
 
 templates_path = ["_templates"]
 
-source_suffix = ["md", "rst"]
+source_suffix = [".md", ".rst"]
 
 # -- Options for HTML output
 
