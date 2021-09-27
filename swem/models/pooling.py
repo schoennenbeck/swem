@@ -1,3 +1,4 @@
+"""Pooling layers."""
 from typing import Optional
 
 import torch
@@ -10,12 +11,13 @@ class SwemPoolingLayer(nn.Module):
     def forward(
         self, input: torch.FloatTensor, mask: Optional[torch.FloatTensor] = None
     ) -> torch.FloatTensor:
+        """The pooling computation. This should be overridden by subclasses."""
         raise NotImplementedError()
 
 
 class HierarchicalPooling(SwemPoolingLayer):
     """Hierarchical Pooling layer (see
-    [Baselines need more love](https://arxiv.org/abs/1808.09843)).
+    `Baselines need more love <https://arxiv.org/abs/1808.09843>`_ ).
 
     First mean pooling along the sequence dimension over windows of the given size,
     then max pooling along the sequence dimension.
@@ -25,10 +27,11 @@ class HierarchicalPooling(SwemPoolingLayer):
     Args:
         window_size (int): Size of the pooling window in the mean pooling step.
 
-    Shape:
-        input: (batch_size, seq_len, enc_dim)
-        mask: (batch_size, seq_len)
-        output: (batch_size, enc_dim)
+
+    Shapes:
+        - input: :math:`(\\text{batch_size}, \\text{seq_len}, \\text{enc_dim})`
+        - mask: :math:`(\\text{batch_size}, \\text{enc_dim})`
+        - output: :math:`(\\text{batch_size}, \\text{enc_dim})`
     """
 
     def __init__(self, window_size: int):
@@ -39,6 +42,7 @@ class HierarchicalPooling(SwemPoolingLayer):
     def forward(
         self, input: torch.FloatTensor, mask: Optional[torch.FloatTensor] = None
     ) -> torch.FloatTensor:
+        """Pooling forward pass."""
 
         seq_len = input.size(1)
 
@@ -58,15 +62,16 @@ class MeanPooling(SwemPoolingLayer):
     mask.
 
 
-    Shape:
-        input: (batch_size, seq_len, enc_dim)
-        mask: (batch_size, seq_len)
-        output: (batch_size, enc_dim)
+    Shapes:
+        - input: :math:`(\\text{batch_size}, \\text{seq_len}, \\text{enc_dim})`
+        - mask: :math:`(\\text{batch_size}, \\text{enc_dim})`
+        - output: :math:`(\\text{batch_size}, \\text{enc_dim})`
     """
 
     def forward(
         self, input: torch.FloatTensor, mask: Optional[torch.FloatTensor] = None
     ) -> torch.FloatTensor:
+        """Pooling forward pass."""
 
         if mask is None:
             return torch.mean(input, dim=-2)
@@ -86,15 +91,16 @@ class MaxPooling(SwemPoolingLayer):
     The mask input is ignored; it is only there for compatibility.
 
 
-    Shape:
-        input: (batch_size, seq_len, enc_dim)
-        mask: (batch_size, seq_len)
-        output: (batch_size, enc_dim)
+    Shapes:
+        - input: :math:`(\\text{batch_size}, \\text{seq_len}, \\text{enc_dim})`
+        - mask: :math:`(\\text{batch_size}, \\text{enc_dim})`
+        - output: :math:`(\\text{batch_size}, \\text{enc_dim})`
     """
 
     def forward(
         self, input: torch.FloatTensor, mask: Optional[torch.FloatTensor] = None
     ) -> torch.FloatTensor:
+        """Pooling forward pass."""
 
         output, _ = torch.max(input, dim=-2)
         return output
@@ -112,10 +118,10 @@ class AttentionPooling(SwemPoolingLayer):
     Args:
         input_dim (int): The size of the input vectors.
 
-    Shape:
-        input: (batch_size, seq_len, input_dim)
-        mask: (batch_size, seq_len)
-        output: (batch_size, input_dim)
+    Shapes:
+        - input: :math:`(\\text{batch_size}, \\text{seq_len}, \\text{enc_dim})`
+        - mask: :math:`(\\text{batch_size}, \\text{enc_dim})`
+        - output: :math:`(\\text{batch_size}, \\text{enc_dim})`
     """
 
     def __init__(self, input_dim: int):
@@ -129,6 +135,7 @@ class AttentionPooling(SwemPoolingLayer):
     def forward(
         self, input: torch.FloatTensor, mask: Optional[torch.FloatTensor] = None
     ) -> torch.FloatTensor:
+        """Pooling forward pass."""
         attention_logits = self.attention_trafo(input).squeeze(-1)
         attention_weights = torch.softmax(attention_logits, dim=-1)
         if mask is not None:
