@@ -27,6 +27,11 @@ setup(
             "coveralls",
             "coverage",
         ],
-        "docs": ["sphinx", "myst-parser", "sphinx-rtd-theme"],
+        "docs": [
+            "sphinx",
+            "myst-parser",
+            "sphinx-rtd-theme",
+            "sphinx-autodoc-typehints",
+        ],
     },
 )
