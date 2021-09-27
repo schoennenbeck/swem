@@ -1,22 +1,29 @@
-Welcome to Lumache's documentation!
-===================================
+Pytorch-swem
+=================
 
-**Lumache** (/lu'make/) is a Python library for cooks and food lovers
-that creates recipes mixing random ingredients.
-It pulls data from the `Open Food Facts database <https://world.openfoodfacts.org/>`_
-and offers a *simple* and *intuitive* API.
+Documentation for pytorch-swem, the pytorch implementation of the simple word embedding model.
 
-Check out the :doc:`usage` section for further information, including
-how to :ref:`installation` the project.
+Both the package and the documentation are currently under development.
 
-.. note::
-
-   This project is under active development.
-
-Contents
---------
 
 .. toctree::
+   :maxdepth: 2
+   :caption: Usage
+   
+   usage/installation.md
 
-   usage
-   api
+.. toctree::
+   :maxdepth: 2
+   :caption: API Documentation
+
+   api/swem.models.pooling.rst
+   api/swem.models.swem.rst
+   api/swem.models.word_drop_embedding.rst
+   api/swem.torch_utils.rst
+
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`search`
