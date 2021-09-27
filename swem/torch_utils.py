@@ -37,7 +37,7 @@ def to_device(
     Examples:
         >>> x = torch.tensor([1.0])
         >>> y = torch.tensor([2.0])
-        >>> to_device([x, (x, y), {"x": x, "y": y}])
+        >>> to_device([x, (x, y), {"x": x, "y": y}], device="cuda:0")
         [tensor([1.], device='cuda:0'),
         (tensor([1.], device='cuda:0'), tensor([2.], device='cuda:0')),
         {'x': tensor([1.], device='cuda:0'), 'y': tensor([2.], device='cuda:0')}]
