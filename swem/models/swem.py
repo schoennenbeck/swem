@@ -35,6 +35,7 @@ class Swem(nn.Module):
           :math:`\\text{enc_dim}` is the last of the post_pooling_dims (if given,
           otherwise the last of the pre_pooling_dims or failing that the
           embedding_dimension).
+
     """
 
     def __init__(
@@ -129,6 +130,43 @@ class Swem(nn.Module):
 
         Args:
             config (Dict[str, Any]): The config to construct the model from.
+
+        Examples:
+            >>> config = {
+            ...     "embedding": {
+            ...             "class": "Embedding",
+            ...             "num_embeddings": 10,
+            ...             "embedding_dim": 2
+            ...     },
+            ...     "pooling": {
+            ...             "class": "HierarchicalPooling",
+            ...             "window_size": 5
+            ...     },
+            ...     "pre_pooling_dims": (5, 5),
+            ...     "post_pooling_dims": (6, 6),
+            ...     "dropout": 0.1
+            ... }
+            >>> Swem.from_config(config)
+            Swem(
+            (embedding): Embedding(10, 2)
+            (pooling_layer): HierarchicalPooling(
+                (avg_pooling): AvgPool2d(kernel_size=(5, 1), stride=1, padding=0)
+            )
+            (pre_pooling_trafo): Sequential(
+                (0): Linear(in_features=2, out_features=5, bias=True)
+                (1): ReLU()
+                (2): Dropout(p=0.1, inplace=False)
+                (3): Linear(in_features=5, out_features=5, bias=True)
+                (4): ReLU()
+                (5): Dropout(p=0.1, inplace=False)
+            )
+            (post_pooling_trafo): Sequential(
+                (0): Linear(in_features=5, out_features=6, bias=True)
+                (1): ReLU()
+                (2): Dropout(p=0.1, inplace=False)
+                (3): Linear(in_features=6, out_features=6, bias=True)
+            )
+            )
 
         """
         pooling_config = config.pop("pooling")

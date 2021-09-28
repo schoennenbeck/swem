@@ -9,6 +9,7 @@ setup(
     author="Sebastian Schönnenbeck",
     author_email="schoennenbeck@gmail.com",
     url="https://github.com/schoennenbeck/swem",
+    project_urls={"Documentation": "https://pytorch-swem.readthedocs.io/"},
     description="Pytorch implementation of the simple word embedding model.",
     long_description=long_description,
     long_description_content_type="text/markdown",

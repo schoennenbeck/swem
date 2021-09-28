@@ -45,6 +45,7 @@ extensions = [
 autosummary_generate = True
 autosummary_generate_overwrite = False
 napoleon_include_init_with_doc = True
+autodoc_typehints = "description"
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
