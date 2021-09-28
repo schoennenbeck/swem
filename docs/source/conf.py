@@ -34,7 +34,7 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.autosummary",
     "sphinx.ext.napoleon",
-    "sphinx_autodoc_typehints",
+    # "sphinx_autodoc_typehints",
     "sphinx.ext.doctest",
     "sphinx.ext.duration",
     "sphinx.ext.intersphinx",
@@ -45,7 +45,7 @@ extensions = [
 autosummary_generate = True
 autosummary_generate_overwrite = False
 napoleon_include_init_with_doc = True
-autodoc_typehints = "description"
+autodoc_typehints = "both"
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
