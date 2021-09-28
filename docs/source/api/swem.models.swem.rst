@@ -16,4 +16,5 @@ Swem
 ~~~~~~~~~~~~~~~~
 
 .. autoclass:: swem.models.swem.Swem
+    :members: from_config
     

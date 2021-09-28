@@ -1,3 +1,4 @@
+import pytest
 import torch
 
 from swem.models.pooling import (
@@ -5,7 +6,35 @@ from swem.models.pooling import (
     HierarchicalPooling,
     MaxPooling,
     MeanPooling,
+    SwemPoolingLayer,
 )
+
+
+class TestSwemPoolingLayer:
+    def test_from_config(self):
+        pool = SwemPoolingLayer.from_config(
+            {"class": "HierarchicalPooling", "window_size": 5}
+        )
+        assert isinstance(pool, HierarchicalPooling)
+
+        pool = SwemPoolingLayer.from_config({"class": "MaxPooling"})
+        assert isinstance(pool, MaxPooling)
+
+        pool = SwemPoolingLayer.from_config({"class": "MeanPooling"})
+        assert isinstance(pool, MeanPooling)
+
+        pool = SwemPoolingLayer.from_config(
+            {"class": "AttentionPooling", "input_dim": 5}
+        )
+        assert isinstance(pool, AttentionPooling)
+
+        with pytest.raises(NotImplementedError):
+            pool = SwemPoolingLayer.from_config({"class": "UnknownPooling"})
+
+    def test_forward(self):
+        pool = SwemPoolingLayer()
+        with pytest.raises(NotImplementedError):
+            pool(torch.randn(8, 19, 3))
 
 
 class TestHierarchicalPooling:
@@ -29,6 +58,10 @@ class TestHierarchicalPooling:
         output_2 = hier(input_2)
         assert torch.allclose(output_2.view(-1), torch.tensor([2.5]))
 
+    def test_config(self):
+        hier = HierarchicalPooling(window_size=2)
+        assert hier.config["window_size"] == 2
+
 
 class TestMeanPooling:
     def test_output_size(self):
@@ -47,6 +80,10 @@ class TestMeanPooling:
         output_2 = mean(input, mask)
         assert torch.allclose(output_2.view(-1), torch.tensor([1.5]))
 
+    def test_config(self):
+        mean = MeanPooling()
+        assert mean.config["class"] == "MeanPooling"
+
 
 class TestMaxPooling:
     def test_output_size(self):
@@ -60,6 +97,10 @@ class TestMaxPooling:
         input = torch.tensor([1, 2, 3], dtype=torch.float32).view(1, 3, 1)
         output_1 = max(input)
         assert torch.allclose(output_1.view(-1), torch.tensor([3.0]))
+
+    def test_config(self):
+        max = MaxPooling()
+        assert max.config["class"] == "MaxPooling"
 
 
 class TestAttentionPooling:
@@ -77,3 +118,8 @@ class TestAttentionPooling:
         assert torch.allclose(
             output.view(-1), torch.tensor([1, 2], dtype=torch.float32)
         )
+
+    def test_config(self):
+        pool = AttentionPooling(input_dim=10)
+        assert pool.config["class"] == "AttentionPooling"
+        assert pool.config["input_dim"] == 10

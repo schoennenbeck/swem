@@ -44,3 +44,17 @@ class TestSwem:
         input = torch.randint(0, 10, (8, 21))
         output = swem(input)
         assert output.size() == (8, 11)
+
+    def test_config(self):
+        swem = Swem(
+            embedding=self.embedding,
+            pooling_layer=self.pooling,
+            pre_pooling_dims=(5,),
+            post_pooling_dims=(11,),
+        )
+
+        new_swem = Swem.from_config(swem.config)
+        assert new_swem.pre_pooling_dims == (5,)
+        assert new_swem.post_pooling_dims == (11,)
+        assert isinstance(new_swem.pooling_layer, HierarchicalPooling)
+        assert new_swem.embedding.num_embeddings == 10

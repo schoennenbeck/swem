@@ -1,5 +1,5 @@
 """A collection of pooling layers with a common API."""
-from typing import Optional
+from typing import Dict, Optional, Union
 
 import torch
 from torch import nn
@@ -13,6 +13,32 @@ class SwemPoolingLayer(nn.Module):
     ) -> torch.FloatTensor:
         """The pooling computation. This should be overridden by subclasses."""
         raise NotImplementedError()
+
+    @staticmethod
+    def from_config(config: Dict[str, Union[str, int]]) -> "SwemPoolingLayer":
+        """Construct a pooling layer from the config.
+
+        The config should have a key 'class' specifying the pooling layer to construct,
+        e.g. 'AttentionPooling' and additional keys providing the arguments for this
+        class's __init__ (e.g. for AttentionPooling 'input_dim').
+
+        Raises:
+            NotImplementedError: If the class specified by 'class' is unknown.
+
+        Returns:
+            SwemPoolingLayer: A pooling layer defined by the config.
+        """
+        pooling_type = config["class"]
+        if pooling_type == "HierarchicalPooling":
+            return HierarchicalPooling(window_size=config["window_size"])
+        elif pooling_type == "MaxPooling":
+            return MaxPooling()
+        elif pooling_type == "MeanPooling":
+            return MeanPooling()
+        elif pooling_type == "AttentionPooling":
+            return AttentionPooling(input_dim=config["input_dim"])
+        else:
+            raise NotImplementedError(f"Unknown class {pooling_type}")
 
 
 class HierarchicalPooling(SwemPoolingLayer):
@@ -38,6 +64,10 @@ class HierarchicalPooling(SwemPoolingLayer):
         super().__init__()
         self.avg_pooling = nn.AvgPool2d(kernel_size=(window_size, 1), stride=1)
         self.window_size = window_size
+
+    @property
+    def config(self) -> Dict[str, Union[str, int]]:
+        return {"class": "HierarchicalPooling", "window_size": self.window_size}
 
     def forward(
         self, input: torch.FloatTensor, mask: Optional[torch.FloatTensor] = None
@@ -68,6 +98,10 @@ class MeanPooling(SwemPoolingLayer):
         - output: :math:`(\\text{batch_size}, \\text{enc_dim})`
     """
 
+    @property
+    def config(self) -> Dict[str, str]:
+        return {"class": "MeanPooling"}
+
     def forward(
         self, input: torch.FloatTensor, mask: Optional[torch.FloatTensor] = None
     ) -> torch.FloatTensor:
@@ -96,6 +130,10 @@ class MaxPooling(SwemPoolingLayer):
         - mask: :math:`(\\text{batch_size}, \\text{enc_dim})`
         - output: :math:`(\\text{batch_size}, \\text{enc_dim})`
     """
+
+    @property
+    def config(self) -> Dict[str, str]:
+        return {"class": "MaxPooling"}
 
     def forward(
         self, input: torch.FloatTensor, mask: Optional[torch.FloatTensor] = None
@@ -131,6 +169,13 @@ class AttentionPooling(SwemPoolingLayer):
             nn.ReLU(),
             nn.Linear(input_dim, 1, bias=False),
         )
+
+    @property
+    def config(self) -> Dict[str, Union[int, str]]:
+        return {
+            "class": "AttentionPooling",
+            "input_dim": self.attention_trafo[0].in_features,
+        }
 
     def forward(
         self, input: torch.FloatTensor, mask: Optional[torch.FloatTensor] = None

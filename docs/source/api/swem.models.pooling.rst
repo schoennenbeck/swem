@@ -16,7 +16,7 @@ SwemPoolingLayer
 ~~~~~~~~~~~~~~~~
 
 .. autoclass:: swem.models.pooling.SwemPoolingLayer
-    :members: forward
+    :members: forward, from_config
 
 
 AttentionPooling
