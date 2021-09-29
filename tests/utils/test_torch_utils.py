@@ -1,7 +1,7 @@
 import pytest
 import torch
 
-from swem.torch_utils import to_device
+from swem.utils.torch_utils import to_device
 
 
 def test_to_device():

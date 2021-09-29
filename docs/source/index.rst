@@ -19,8 +19,9 @@ API
     :toctree: api
     :caption: API
 
+    swem.metrics
     swem.models
-    swem.torch_utils
+    swem.utils
 
 Indices and tables
 ==================

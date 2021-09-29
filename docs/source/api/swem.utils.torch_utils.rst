@@ -4,6 +4,7 @@ torch_utils
 .. autosummary::
     :nosignatures:
 
+    swem.utils.torch_utils.to_device
 
-.. automodule:: swem.torch_utils
+.. automodule:: swem.utils.torch_utils
     :members: 
