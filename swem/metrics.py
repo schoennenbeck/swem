@@ -106,31 +106,49 @@ class ClassificationReport:
 
     def update(
         self,
-        logits: torch.Tensor,
-        labels: torch.Tensor,
-        mask: Optional[torch.Tensor] = None,
+        logits: "array_like",
+        labels: "array_like",
+        mask: Optional["array_like"] = None,
     ):
         """Update the tracked metrics with the results from a new batch.
 
+        The inputs can be any type that can be turned into a torch.Tensor
+        ("array_like").
+
         Args:
-            logits (torch.Tensor): Output of the model in the classification task
+            logits (array_like): Output of the model in the classification task
               (pre-softmax/sigmoid).
-            labels (torch.Tensor): The correct labels.
-            mask (Optional[torch.Tensor], optional): A 0/1-mask telling us which
+            labels (array_like): The correct labels.
+            mask (Optional[array_like]): A 0/1-mask telling us which
               samples to take into account (where mask is 1). Defaults to None.
         """
+        logits = (
+            logits.clone().detach()
+            if isinstance(logits, torch.Tensor)
+            else torch.tensor(logits)
+        )
+        labels = (
+            labels.clone().detach()
+            if isinstance(labels, torch.Tensor)
+            else torch.tensor(labels)
+        )
+
         if self.binary:
             num_classes = 2
-            preds = torch.tensor(logits > 0).to(dtype=torch.int64).view(-1)
+            preds = (logits > 0).to(dtype=torch.int64).view(-1)
         else:
             num_classes = logits.size(-1)
-            preds = torch.argmax(torch.tensor(logits), dim=-1).view(-1)
+            preds = torch.argmax(logits, dim=-1).view(-1)
 
         labels = labels.view(-1)
         if mask is None:
             mask = torch.ones_like(labels, dtype=torch.bool, device=labels.device)
         else:
-            mask = torch.tensor(mask, dtype=torch.bool)
+            mask = (
+                mask.clone().detach()
+                if isinstance(mask, torch.Tensor)
+                else torch.tensor(mask)
+            ).to(dtype=torch.bool)
 
         assert labels.size() == mask.size()
         assert preds.size() == mask.size()

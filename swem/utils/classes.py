@@ -70,6 +70,11 @@ class ClfMetricTracker:
     fp: int = 0
     fn: int = 0
 
+    def __post_init__(self):
+        assert self.tp >= 0
+        assert self.fp >= 0
+        assert self.fn >= 0
+
     @property
     def support(self) -> int:
         return self.tp + self.fn
@@ -87,7 +92,7 @@ class ClfMetricTracker:
         return self.tp / (self.tp + self.fp)
 
     @property
-    def f1_score(self):
+    def f1_score(self) -> Optional[float]:
         if not self.recall or not self.precision:
             return None
         return 2 * self.recall * self.precision / (self.recall + self.precision)

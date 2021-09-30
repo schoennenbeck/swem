@@ -13,3 +13,4 @@ ClassificationReport
 ~~~~~~~~~~~~~~~~~~~~
 
 .. autoclass:: swem.metrics.ClassificationReport
+    :members: get, reset, update
