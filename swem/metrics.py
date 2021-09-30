@@ -132,10 +132,10 @@ class ClassificationReport:
               samples to take into account (where mask is 1). Defaults to None.
 
         Shapes:
-            logits: :math:`(*, \\text{num_classes})` if self.binary is False otherwise
+            - logits: :math:`(*, \\text{num_classes})` if self.binary is False otherwise
               :math:`(*,)` where * is any number of dimensions.
-            labels: :math:`(*,)` where * is the same as for logits.
-            mask: :math:`(*,)` where * is the same as for logits.
+            - labels: :math:`(*,)` where * is the same as for logits.
+            - mask: :math:`(*,)` where * is the same as for logits.
         """
         logits = (
             logits.clone().detach()
