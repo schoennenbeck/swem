@@ -1,8 +1,9 @@
 # Simple word embedding models
 
-[![PyPI version](https://img.shields.io/pypi/v/pytorch-swem)](https://pypi.org/project/pytorch-swem/)
+[![PyPI - Version](https://img.shields.io/pypi/v/pytorch-swem)](https://pypi.org/project/pytorch-swem/)
 [![PyPI - License](https://img.shields.io/pypi/l/pytorch-swem)](https://github.com/schoennenbeck/swem/blob/main/LICENSE)
 [![Coverage Status](https://coveralls.io/repos/github/schoennenbeck/swem/badge.svg)](https://coveralls.io/github/schoennenbeck/swem)
+[![Docs](https://readthedocs.org/projects/pytorch-swem/badge/?version=latest)](https://pytorch-swem.readthedocs.io/)
 
 A pytorch implementation of the Simple Word Embedding Model from the paper [Baselines need more love](https://arxiv.org/abs/1808.09843) and some additional models and utilities.
 
