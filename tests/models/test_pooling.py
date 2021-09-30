@@ -13,23 +13,23 @@ from swem.models.pooling import (
 class TestSwemPoolingLayer:
     def test_from_config(self):
         pool = SwemPoolingLayer.from_config(
-            {"class": "HierarchicalPooling", "window_size": 5}
+            {"type": "HierarchicalPooling", "window_size": 5}
         )
         assert isinstance(pool, HierarchicalPooling)
 
-        pool = SwemPoolingLayer.from_config({"class": "MaxPooling"})
+        pool = SwemPoolingLayer.from_config({"type": "MaxPooling"})
         assert isinstance(pool, MaxPooling)
 
-        pool = SwemPoolingLayer.from_config({"class": "MeanPooling"})
+        pool = SwemPoolingLayer.from_config({"type": "MeanPooling"})
         assert isinstance(pool, MeanPooling)
 
         pool = SwemPoolingLayer.from_config(
-            {"class": "AttentionPooling", "input_dim": 5}
+            {"type": "AttentionPooling", "input_dim": 5}
         )
         assert isinstance(pool, AttentionPooling)
 
-        with pytest.raises(NotImplementedError):
-            pool = SwemPoolingLayer.from_config({"class": "UnknownPooling"})
+        with pytest.raises(AssertionError):
+            pool = SwemPoolingLayer.from_config({"type": "UnknownPooling"})
 
     def test_forward(self):
         pool = SwemPoolingLayer()
@@ -60,7 +60,7 @@ class TestHierarchicalPooling:
 
     def test_config(self):
         hier = HierarchicalPooling(window_size=2)
-        assert hier.config["window_size"] == 2
+        assert hier.config.window_size == 2
 
 
 class TestMeanPooling:
@@ -82,7 +82,7 @@ class TestMeanPooling:
 
     def test_config(self):
         mean = MeanPooling()
-        assert mean.config["class"] == "MeanPooling"
+        assert mean.config.type == "MeanPooling"
 
 
 class TestMaxPooling:
@@ -100,7 +100,7 @@ class TestMaxPooling:
 
     def test_config(self):
         max = MaxPooling()
-        assert max.config["class"] == "MaxPooling"
+        assert max.config.type == "MaxPooling"
 
 
 class TestAttentionPooling:
@@ -121,5 +121,5 @@ class TestAttentionPooling:
 
     def test_config(self):
         pool = AttentionPooling(input_dim=10)
-        assert pool.config["class"] == "AttentionPooling"
-        assert pool.config["input_dim"] == 10
+        assert pool.config.type == "AttentionPooling"
+        assert pool.config.input_dim == 10

@@ -10,7 +10,14 @@ swem
 .. autosummary::
     :nosignatures:
 
+    swem.models.swem.SwemConfig
     swem.models.swem.Swem
+
+SwemConfig
+~~~~~~~~~~~~~~~~
+
+.. autoclass:: swem.models.swem.SwemConfig
+    :members: 
 
 Swem
 ~~~~~~~~~~~~~~~~

@@ -6,11 +6,18 @@ pooling
 .. autosummary::
     :nosignatures:
 
+    swem.models.pooling.PoolingConfig
     swem.models.pooling.SwemPoolingLayer
     swem.models.pooling.AttentionPooling
     swem.models.pooling.HierarchicalPooling
     swem.models.pooling.MaxPooling
     swem.models.pooling.MeanPooling
+
+PoolingConfig
+~~~~~~~~~~~~~~~~
+
+.. autoclass:: swem.models.pooling.PoolingConfig
+    :members: 
 
 SwemPoolingLayer
 ~~~~~~~~~~~~~~~~

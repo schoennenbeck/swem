@@ -1,6 +1,42 @@
 """Embedding layer with word-drop regularization."""
+from dataclasses import dataclass
+from typing import Any, Dict, Literal, Optional
+
 import torch
 from torch import nn
+
+
+@dataclass
+class EmbeddingConfig:
+    """Configuration for embedding layers."""
+
+    embedding_dim: int
+    num_embeddings: int
+    padding_idx: Optional[int] = None
+    max_norm: Optional[float] = None
+    norm_type: float = 2.0
+    scale_grad_by_freq: bool = False
+    sparse: bool = False
+    p: Optional[float] = None
+    type: Literal["Embedding", "WordDropEmbedding"] = "Embedding"
+
+    def __post_init__(self):
+        assert self.type in [
+            "Embedding",
+            "WordDropEmbedding",
+        ], f"Got unknown type {self.type}."
+        if self.type == "WordDropEmbedding":
+            if self.p is None:
+                raise ValueError(
+                    "Type 'WordDropEmbedding' but not dropout probability 'p' given."
+                )
+            assert (
+                0 <= self.p < 1
+            ), f"Dropout probability must be at least 0 and strictly less than 1, got {self.p}"
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> "EmbeddingConfig":
+        return cls(**d)
 
 
 class WordDropEmbedding(nn.Embedding):

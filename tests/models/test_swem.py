@@ -3,6 +3,7 @@ from torch import nn
 
 from swem.models.pooling import HierarchicalPooling
 from swem.models.swem import Swem
+from swem.models.word_drop_embedding import WordDropEmbedding
 
 
 class TestSwem:
@@ -46,12 +47,16 @@ class TestSwem:
         assert output.size() == (8, 11)
 
     def test_config(self):
+        wemb = WordDropEmbedding(10, 3, p=0.1)
         swem = Swem(
-            embedding=self.embedding,
+            embedding=wemb,
             pooling_layer=self.pooling,
             pre_pooling_dims=(5,),
             post_pooling_dims=(11,),
         )
+
+        assert swem.config.embedding.type == "WordDropEmbedding"
+        assert swem.config.pooling.window_size == 3
 
         new_swem = Swem.from_config(swem.config)
         assert new_swem.pre_pooling_dims == (5,)

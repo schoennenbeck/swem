@@ -1,13 +1,46 @@
 """Implementation of the Simple Word Embedding Modell."""
 
+from dataclasses import asdict, dataclass
 from itertools import chain
-from typing import Any, Dict, Optional, Tuple
+from typing import Any, Dict, Optional, Tuple, Union
 
 import torch
 from torch import nn
 
-from swem.models.pooling import SwemPoolingLayer
-from swem.models.word_drop_embedding import WordDropEmbedding
+from swem.models.pooling import PoolingConfig, SwemPoolingLayer
+from swem.models.word_drop_embedding import EmbeddingConfig, WordDropEmbedding
+
+
+@dataclass
+class SwemConfig:
+    """Configuration for SWEM models."""
+
+    embedding: EmbeddingConfig
+    pooling: PoolingConfig
+    pre_pooling_dims: Optional[Tuple[int, ...]] = None
+    post_pooling_dims: Optional[Tuple[int, ...]] = None
+    dropout: float = 0.2
+
+    def __post_init__(self):
+        if isinstance(self.pooling, dict):
+            self.pooling = PoolingConfig(**self.pooling)
+        if isinstance(self.embedding, dict):
+            self.embedding = EmbeddingConfig(**self.embedding)
+        if self.pre_pooling_dims is not None:
+            assert all(
+                d > 0 for d in self.pre_pooling_dims
+            ), f"Dimension must be greater than 0, got {self.pre_pooling_dims}"
+        if self.post_pooling_dims is not None:
+            assert all(
+                d > 0 for d in self.post_pooling_dims
+            ), f"Dimension must be greater than 0, got {self.post_pooling_dims}"
+        assert (
+            0 <= self.dropout < 1
+        ), f"Dropout must be at least 0 and strictly less than 1, got {self.dropout}"
+
+    @classmethod
+    def from_dict(cls, d):
+        return cls(**d)
 
 
 class Swem(nn.Module):
@@ -89,47 +122,45 @@ class Swem(nn.Module):
                 )
 
     @property
-    def config(self) -> Dict[str, Any]:
-        embedding_config = {
-            "class": "WordDropEmbedding"
-            if isinstance(self.embedding, WordDropEmbedding)
-            else "Embedding",
-            "embedding_dim": self.embedding.embedding_dim,
-            "num_embeddings": self.embedding.num_embeddings,
-            "padding_idx": self.embedding.padding_idx,
-            "scale_grad_by_freq": self.embedding.scale_grad_by_freq,
-            "max_norm": self.embedding.max_norm,
-            "norm_type": self.embedding.norm_type,
-            "sparse": self.embedding.sparse,
-        }
+    def config(self) -> SwemConfig:
+        embedding_config = EmbeddingConfig.from_dict(
+            {
+                "type": "WordDropEmbedding"
+                if isinstance(self.embedding, WordDropEmbedding)
+                else "Embedding",
+                "embedding_dim": self.embedding.embedding_dim,
+                "num_embeddings": self.embedding.num_embeddings,
+                "padding_idx": self.embedding.padding_idx,
+                "scale_grad_by_freq": self.embedding.scale_grad_by_freq,
+                "max_norm": self.embedding.max_norm,
+                "norm_type": self.embedding.norm_type,
+                "sparse": self.embedding.sparse,
+                "p": self.embedding.p
+                if isinstance(self.embedding, WordDropEmbedding)
+                else None,
+            }
+        )
 
-        if isinstance(self.embedding, WordDropEmbedding):
-            embedding_config["p"] = self.embedding.p
-
-        return {
-            "pre_pooling_dims": self.pre_pooling_dims,
-            "post_pooling_dims": self.post_pooling_dims,
-            "dropout": self.dropout,
-            "pooling": self.pooling_layer.config,
-            "embedding": embedding_config,
-        }
+        return SwemConfig.from_dict(
+            {
+                "pre_pooling_dims": self.pre_pooling_dims,
+                "post_pooling_dims": self.post_pooling_dims,
+                "dropout": self.dropout,
+                "pooling": self.pooling_layer.config,
+                "embedding": embedding_config,
+            }
+        )
 
     @classmethod
-    def from_config(cls, config: Dict[str, Any]) -> "Swem":
+    def from_config(cls, config: Union[SwemConfig, Dict[str, Any]]) -> "Swem":
         """Construct a SWEM-model from a config.
 
-        The config should have the following keys:
-
-            - pooling: A config for a SwemPoolingLayer.
-            - embedding: A dict with key 'class' specifying either 'Embedding' or
-              'WordDropEmbedding' and further keys according to the arguments of the
-              correct class's __init__.
-            - pre_pooling_dims: Tuple of int as for __init__.
-            - post_pooling_dims: Tuple of int as for __init__.
-            - dropout: float as for __init__.
+        Instead of a config the user can also provide a dictionary representation of
+        the config.
 
         Args:
-            config (Dict[str, Any]): The config to construct the model from.
+            config (Union[SwemConfig, Dict[str, Any]]): The config to construct the
+              model from.
 
         Examples:
             >>> config = {
@@ -169,16 +200,26 @@ class Swem(nn.Module):
             )
 
         """
-        pooling_config = config.pop("pooling")
-        pooling_layer = SwemPoolingLayer.from_config(pooling_config)
+        if isinstance(config, dict):
+            config = SwemConfig.from_dict(config)
 
-        embedding_config = config.pop("embedding")
-        if embedding_config.pop("class") == "WordDropEmbedding":
+        pooling_layer = SwemPoolingLayer.from_config(config.pooling)
+
+        embedding_config = asdict(config.embedding)
+
+        if embedding_config.pop("type") == "WordDropEmbedding":
             embedding = WordDropEmbedding(**embedding_config)
         else:
+            embedding_config.pop("p")
             embedding = nn.Embedding(**embedding_config)
 
-        return cls(embedding=embedding, pooling_layer=pooling_layer, **config)
+        return cls(
+            embedding=embedding,
+            pooling_layer=pooling_layer,
+            pre_pooling_dims=config.pre_pooling_dims,
+            post_pooling_dims=config.post_pooling_dims,
+            dropout=config.dropout,
+        )
 
     def forward(self, input: torch.Tensor) -> torch.FloatTensor:
         output = self.embedding(input)
