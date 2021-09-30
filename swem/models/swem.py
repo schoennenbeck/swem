@@ -23,9 +23,9 @@ class SwemConfig:
 
     def __post_init__(self):
         if isinstance(self.pooling, dict):
-            self.pooling = PoolingConfig(**self.pooling)
+            super().__setattr__("pooling", PoolingConfig(**self.pooling))
         if isinstance(self.embedding, dict):
-            self.embedding = EmbeddingConfig(**self.embedding)
+            super().__setattr__("embedding", EmbeddingConfig(**self.embedding))
         if self.pre_pooling_dims is not None:
             assert all(
                 d > 0 for d in self.pre_pooling_dims

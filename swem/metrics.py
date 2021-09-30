@@ -1,4 +1,5 @@
 """Implementation of certain useful metrics."""
+import json
 from typing import Dict, List, Optional, Union
 
 import torch
@@ -89,6 +90,12 @@ class ClassificationReport:
         self.num_samples = 0
         self.num_correct = 0
         self.class_metrics = KeyDependentDefaultdict(ClfMetricTracker)
+
+    def __repr__(self) -> str:
+        state = self.get()
+        if state is None:
+            return ""
+        return json.dumps(state, indent=2)
 
     def get(
         self,
