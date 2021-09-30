@@ -40,6 +40,7 @@ extensions = [
     "sphinx.ext.intersphinx",
     "sphinx.ext.mathjax",
     "myst_parser",
+    "nbsphinx",
 ]
 
 autosummary_generate = True

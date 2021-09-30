@@ -11,6 +11,7 @@ Both the package and the documentation are currently under development.
    :caption: Usage
 
    usage/installation.md
+   usage/Demo.ipynb
 
 API 
 ~~~

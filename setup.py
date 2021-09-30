@@ -31,6 +31,7 @@ setup(
         "docs": [
             "sphinx",
             "myst-parser",
+            "nbsphinx",
             "sphinx-rtd-theme",
             "sphinx-autodoc-typehints",
         ],
