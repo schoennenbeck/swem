@@ -6,7 +6,7 @@ import torch
 from torch import nn
 
 
-@dataclass
+@dataclass(frozen=True)
 class PoolingConfig:
     """Configuration for pooling layers."""
 

@@ -11,7 +11,7 @@ from swem.models.pooling import PoolingConfig, SwemPoolingLayer
 from swem.models.word_drop_embedding import EmbeddingConfig, WordDropEmbedding
 
 
-@dataclass
+@dataclass(frozen=True)
 class SwemConfig:
     """Configuration for SWEM models."""
 
