@@ -130,6 +130,12 @@ class ClassificationReport:
             labels (array_like): The correct labels.
             mask (Optional[array_like]): A 0/1-mask telling us which
               samples to take into account (where mask is 1). Defaults to None.
+
+        Shapes:
+            logits: :math:`(*, \\text{num_classes})` if self.binary is False otherwise
+              :math:`(*,)` where * is any number of dimensions.
+            labels: :math:`(*,)` where * is the same as for logits.
+            mask: :math:`(*,)` where * is the same as for logits.
         """
         logits = (
             logits.clone().detach()
@@ -145,14 +151,17 @@ class ClassificationReport:
         if self.binary:
             num_classes = 2
             if self.from_probas:
-                preds = (logits > 0.5).to(dtype=torch.int64).view(-1)
+                preds = (logits > 0.5).to(dtype=torch.int64)
             else:
-                preds = (logits > 0).to(dtype=torch.int64).view(-1)
+                preds = (logits > 0).to(dtype=torch.int64)
         else:
             num_classes = logits.size(-1)
-            preds = torch.argmax(logits, dim=-1).view(-1)
+            preds = torch.argmax(logits, dim=-1)
 
-        labels = labels.view(-1)
+        assert (
+            preds.size() == labels.size()
+        ), f"Expected predictions and labels to have the same shape but got {preds.shape} and {labels.shape}."
+
         if mask is None:
             mask = torch.ones_like(labels, dtype=torch.bool, device=labels.device)
         else:
@@ -162,8 +171,12 @@ class ClassificationReport:
                 else torch.tensor(mask)
             ).to(dtype=torch.bool)
 
-        assert labels.size() == mask.size()
-        assert preds.size() == mask.size()
+        assert (
+            labels.size() == mask.size()
+        ), f"Expected mask and labels to have the same shape but got {mask.shape} and {labels.shape}."
+        mask = mask.view(-1)
+        labels = labels.view(-1)
+        preds = preds.view(-1)
 
         self.num_samples += torch.sum(mask).item()
         self.num_correct += torch.sum((labels == preds) * mask).item()
