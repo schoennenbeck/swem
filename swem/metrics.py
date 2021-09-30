@@ -18,6 +18,10 @@ class ClassificationReport:
         binary (bool): Whether or not we are doing binary classification (i.e. the
           model output is the pre-sigmoid logit for the positive class). Defaults to
           False.
+        from_probas (bool): If True we interpret the input as probabilities instead of
+          logits. This is only relevant when dealing with binary classification (since
+          in the multiclass setting the predicted label is an argmax which is the same
+          for logits and probabilities). Defaults to False.
 
     Examples:
         >>> report = ClassificationReport(target_names=["A", "B"])
@@ -68,10 +72,14 @@ class ClassificationReport:
     """
 
     def __init__(
-        self, target_names: Optional[List[Union[str, int]]] = None, binary: bool = False
+        self,
+        target_names: Optional[List[Union[str, int]]] = None,
+        binary: bool = False,
+        from_probas: bool = False,
     ):
         self.target_names = target_names
         self.binary = binary
+        self.from_probas = from_probas
         self.num_samples = 0
         self.num_correct = 0
         self.class_metrics = KeyDependentDefaultdict(ClfMetricTracker)
@@ -117,7 +125,8 @@ class ClassificationReport:
 
         Args:
             logits (array_like): Output of the model in the classification task
-              (pre-softmax/sigmoid).
+              (pre-softmax/sigmoid if self.from_probas is False or probabilites if
+              self.from_probas is True).
             labels (array_like): The correct labels.
             mask (Optional[array_like]): A 0/1-mask telling us which
               samples to take into account (where mask is 1). Defaults to None.
@@ -135,7 +144,10 @@ class ClassificationReport:
 
         if self.binary:
             num_classes = 2
-            preds = (logits > 0).to(dtype=torch.int64).view(-1)
+            if self.from_probas:
+                preds = (logits > 0.5).to(dtype=torch.int64).view(-1)
+            else:
+                preds = (logits > 0).to(dtype=torch.int64).view(-1)
         else:
             num_classes = logits.size(-1)
             preds = torch.argmax(logits, dim=-1).view(-1)

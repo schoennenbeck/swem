@@ -47,3 +47,25 @@ class TestClassificationReport:
         assert abs(state["accuracy"] - 1 / 2) < 1e-5
         assert state["class_metrics"][1]["support"] == 0
         assert state["class_metrics"][1]["precision"] == 0
+
+    def test_from_probas(self):
+        report = ClassificationReport(binary=True, from_probas=True)
+        assert report.get() is None
+
+        logits = torch.tensor([0.9, 0.1, 0.8])
+        labels = torch.tensor([0, 0, 1])
+        report.update(logits, labels)
+        state = report.get()
+        assert state["num_samples"] == 3
+        assert abs(state["accuracy"] - 2 / 3) < 1e-5
+        assert state["class_metrics"][0]["support"] == 2
+        assert abs(state["class_metrics"][0]["recall"] - 1 / 2) < 1e-5
+
+        mask = torch.tensor([1, 1, 0])
+        report.reset()
+        report.update(logits, labels, mask)
+        state = report.get()
+        assert state["num_samples"] == 2
+        assert abs(state["accuracy"] - 1 / 2) < 1e-5
+        assert state["class_metrics"][1]["support"] == 0
+        assert state["class_metrics"][1]["precision"] == 0
