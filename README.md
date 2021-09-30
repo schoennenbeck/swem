@@ -27,6 +27,10 @@ cd swem
 pip install .
 ```
 
+## Usage
+
+For an example of how to use this package please see the [demo-notebook](https://github.com/schoennenbeck/swem/blob/main/docs/source/usage/Demo.ipynb).
+
 ## Docs
 
-The [documentation](https://pytorch-swem.readthedocs.io/) is currently under development.
+The [documentation](https://pytorch-swem.readthedocs.io/) is hosted on readthedocs.
