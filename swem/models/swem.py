@@ -1,12 +1,16 @@
 """Implementation of the Simple Word Embedding Modell."""
 
+import json
+import warnings
 from dataclasses import asdict, dataclass
 from itertools import chain
+from pathlib import Path
 from typing import Any, Dict, Optional, Tuple, Union
 
 import torch
 from torch import nn
 
+from swem import __version__
 from swem.models.pooling import PoolingConfig, SwemPoolingLayer
 from swem.models.word_drop_embedding import EmbeddingConfig, WordDropEmbedding
 
@@ -26,6 +30,11 @@ class SwemConfig:
             super().__setattr__("pooling", PoolingConfig(**self.pooling))
         if isinstance(self.embedding, dict):
             super().__setattr__("embedding", EmbeddingConfig(**self.embedding))
+        if isinstance(self.pre_pooling_dims, list):
+            super().__setattr__("pre_pooling_dims", tuple(self.pre_pooling_dims))
+        if isinstance(self.post_pooling_dims, list):
+            super().__setattr__("post_pooling_dims", tuple(self.post_pooling_dims))
+
         if self.pre_pooling_dims is not None:
             assert all(
                 d > 0 for d in self.pre_pooling_dims
@@ -220,6 +229,81 @@ class Swem(nn.Module):
             post_pooling_dims=config.post_pooling_dims,
             dropout=config.dropout,
         )
+
+    def save(self, path: Union[str, Path]):
+        """Save this model to disk.
+
+        The model will be stored to the directory given by the path as two files
+        'config.json' containing the model config and 'weights.pt" containing the
+        weights of the layers.
+
+        Args:
+            path (Union[str, Path]): The directory in which to store the model file.
+              Should be empty. If the directory does not exist it will be generated (
+              this does not apply to intermediate directories).
+
+        Raises:
+            FileNotFoundError: If the parent directory of path does not exist.
+            NotADirectoryError: If path already exists and is not a directory.
+            FileExistsError: If path is a non-empty directory.
+        """
+        path = Path(path)
+        if not path.parent.exists():
+            raise FileNotFoundError(
+                f"Parent path {path.parent.absolute()} does not exist."
+            )
+
+        if path.exists():
+            if not path.is_dir():
+                raise NotADirectoryError(
+                    f"Path {path.absolute()} exists and is not a directory."
+                )
+            elif any(path.iterdir()):
+                raise FileExistsError(
+                    f"Path {path.absolute()} exists and is not empty."
+                )
+        else:
+            path.mkdir()
+
+        with open(path / "config.json", "w") as f:
+            config = asdict(self.config)
+            config["version"] = __version__
+            json.dump(config, f)
+
+        torch.save(self.state_dict(), path / "weights.pt")
+
+    @classmethod
+    def load(cls, path: Union[str, Path]) -> "Swem":
+        """Load a model that was previously saved on disk.
+
+        Args:
+            path (Union[str, Path]): The directory in which contains the config and
+              weights for the stored model.
+
+        Raises:
+            NotADirectoryError: If the given path is not a directory.
+
+        Returns:
+            [Swem]: The saved model.
+        """
+        path = Path(path)
+        if not path.is_dir():
+            raise NotADirectoryError(f"Path {path.absolute()} is not a directory.")
+
+        with open(path / "config.json") as f:
+            config = json.load(f)
+
+        version = config.pop("version")
+        if version != __version__:
+            warnings.warn(
+                f"Trying to load model from version {version} while using version {__version__}. This may lead to unintended behaviour."
+            )
+
+        model = cls.from_config(config)
+        weights = torch.load(path / "weights.pt", map_location="cpu")
+        model.load_state_dict(weights)
+
+        return model
 
     def forward(self, input: torch.Tensor) -> torch.FloatTensor:
         output = self.embedding(input)
