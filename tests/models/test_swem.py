@@ -1,3 +1,4 @@
+import pytest
 import torch
 from torch import nn
 
@@ -51,7 +52,9 @@ class TestSwem:
         swem = Swem(
             embedding=wemb,
             pooling_layer=self.pooling,
-            pre_pooling_dims=(5,),
+            pre_pooling_dims=[
+                5,
+            ],
             post_pooling_dims=(11,),
         )
 
@@ -63,3 +66,34 @@ class TestSwem:
         assert new_swem.post_pooling_dims == (11,)
         assert isinstance(new_swem.pooling_layer, HierarchicalPooling)
         assert new_swem.embedding.num_embeddings == 10
+
+    def test_save_and_load(self, tmp_path):
+        swem = Swem(
+            embedding=self.embedding,
+            pooling_layer=self.pooling,
+            pre_pooling_dims=(5,),
+            post_pooling_dims=(11,),
+        )
+
+        with pytest.raises(FileNotFoundError):
+            swem.save(tmp_path / "test" / "test")
+
+        (tmp_path / "testdir").mkdir()
+        with open(tmp_path / "testdir" / "testfile", "w") as f:
+            f.write("test")
+
+        with pytest.raises(NotADirectoryError):
+            swem.save(tmp_path / "testdir" / "testfile")
+
+        with pytest.raises(FileExistsError):
+            swem.save(tmp_path / "testdir")
+
+        swem.save(tmp_path / "model")
+
+        loaded = Swem.load(tmp_path / "model")
+
+        assert loaded.config == swem.config
+        assert all(
+            torch.allclose(swem_param, loaded.state_dict()[param_name])
+            for param_name, swem_param in swem.state_dict().items()
+        )
