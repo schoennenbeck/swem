@@ -176,12 +176,12 @@ class Swem(nn.Module):
         Examples:
             >>> config = {
             ...     "embedding": {
-            ...             "class": "Embedding",
+            ...             "type": "Embedding",
             ...             "num_embeddings": 10,
             ...             "embedding_dim": 2
             ...     },
             ...     "pooling": {
-            ...             "class": "HierarchicalPooling",
+            ...             "type": "HierarchicalPooling",
             ...             "window_size": 5
             ...     },
             ...     "pre_pooling_dims": (5, 5),
