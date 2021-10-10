@@ -15,7 +15,7 @@ class ClassificationReport:
     metrics should be aggregated over the whole dataset.
 
     Args:
-        target_names (Optional[List[str, int]]): Labels in the classification task in
+        target_names (list[str | int] | None): Labels in the classification task in
           the same order as the output of the model.
         binary (bool): Whether or not we are doing binary classification (i.e. the
           model output is the pre-sigmoid logit for the positive class). Defaults to
@@ -134,7 +134,7 @@ class ClassificationReport:
               (pre-softmax/sigmoid if self.from_probas is False or probabilites if
               self.from_probas is True).
             labels (array_like): The correct labels.
-            mask (Optional[array_like]): A 0/1-mask telling us which
+            mask (array_like | None): A 0/1-mask telling us which
               samples to take into account (where mask is 1). Defaults to None.
 
         Shapes:

@@ -39,10 +39,10 @@ class ClfMetricTracker:
     classification task.
 
     Args:
-        name: The label this instance is keeping track of.
-        tp: Start value for true positives. Defaults to 0.
-        fp: Start-value for false positives. Defaults to 0.
-        fn: Start-value for false negatives. Defaults to 0.
+        name (str | int | None): The label this instance is keeping track of.
+        tp (int): Start value for true positives. Defaults to 0.
+        fp (int): Start-value for false positives. Defaults to 0.
+        fn (int): Start-value for false negatives. Defaults to 0.
 
     Attributes:
         support: Number of instances for the label that were encountered.

@@ -66,9 +66,9 @@ class Swem(nn.Module):
     Args:
         embedding (nn.Embedding): The embedding layer used by the model.
         pooling_layer (nn.Module): The pooling layer to be used by the model.
-        pre_pooling_dims (Optional[Tuple[int, ...]]): Intermediate dimensions for the
+        pre_pooling_dims (tuple[int, ...] | None): Intermediate dimensions for the
           feed forward network applied to the input.
-        post_pooling_dims (Optional[Tuple[int, ...]]): Intermediate dimensions for the
+        post_pooling_dims (tuple[int, ...] | None): Intermediate dimensions for the
           feed forward network applied to the output of the pooling layer.
         dropout (float): Dropout probability after each layer in both feed forward
           subnetworks.
@@ -170,7 +170,7 @@ class Swem(nn.Module):
         the config.
 
         Args:
-            config (Union[SwemConfig, Dict[str, Any]]): The config to construct the
+            config (SwemConfig | dict[str, Any]): The config to construct the
               model from.
 
         Examples:
@@ -240,7 +240,7 @@ class Swem(nn.Module):
         weights of the layers.
 
         Args:
-            path (Union[str, Path]): The directory in which to store the model file.
+            path (str | Path): The directory in which to store the model file.
               Should be empty. If the directory does not exist it will be generated (
               this does not apply to intermediate directories).
 
@@ -279,7 +279,7 @@ class Swem(nn.Module):
         """Load a model that was previously saved on disk.
 
         Args:
-            path (Union[str, Path]): The directory in which contains the config and
+            path (str | Path): The directory in which contains the config and
               weights for the stored model.
 
         Raises:

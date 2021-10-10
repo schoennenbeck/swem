@@ -18,7 +18,7 @@ def to_device(
 
     Args:
         tensors (Any): The container of (eventually) tensors to be transfered.
-        device (Union[str, torch.device]): The target device.
+        device (str | torch.device): The target device.
         non_tensors (str, optional): A string describing the behaviour of the function
           when a non-tensor is encountered. If 'error' raises a ValueError, if 'ignore'
           the value is returned as is, if 'drop' the value is not included in the output
