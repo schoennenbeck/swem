@@ -14,7 +14,7 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     packages=find_packages(exclude=["tests"]),
-    install_requires=["torch >= 1.7.1"],
+    install_requires=["torch >= 1"],
     license="MIT",
     python_requires=">=3.8",
     extras_require={
