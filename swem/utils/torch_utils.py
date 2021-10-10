@@ -1,12 +1,13 @@
 """Some addtional utilities."""
+from __future__ import annotations
 
-from typing import Any, Union
+from typing import Any
 
 import torch
 
 
 def to_device(
-    tensors: Any, device: Union[str, torch.device], non_tensors: str = "error"
+    tensors: Any, device: str | torch.device, non_tensors: str = "error"
 ) -> Any:
     """Transfer a whole container of tensors to a device.
 

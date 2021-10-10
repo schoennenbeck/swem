@@ -1,11 +1,13 @@
 """Implementation of the Simple Word Embedding Modell."""
 
+from __future__ import annotations
+
 import json
 import warnings
 from dataclasses import asdict, dataclass
 from itertools import chain
 from pathlib import Path
-from typing import Any, Dict, Optional, Tuple, Union
+from typing import Any
 
 import torch
 from torch import nn
@@ -21,8 +23,8 @@ class SwemConfig:
 
     embedding: EmbeddingConfig
     pooling: PoolingConfig
-    pre_pooling_dims: Optional[Tuple[int, ...]] = None
-    post_pooling_dims: Optional[Tuple[int, ...]] = None
+    pre_pooling_dims: tuple[int, ...] | None = None
+    post_pooling_dims: tuple[int, ...] | None = None
     dropout: float = 0.2
 
     def __post_init__(self):
@@ -48,7 +50,7 @@ class SwemConfig:
         ), f"Dropout must be at least 0 and strictly less than 1, got {self.dropout}"
 
     @classmethod
-    def from_dict(cls, d):
+    def from_dict(cls, d: dict[str, Any]):
         return cls(**d)
 
 
@@ -84,8 +86,8 @@ class Swem(nn.Module):
         self,
         embedding: nn.Embedding,
         pooling_layer: SwemPoolingLayer,
-        pre_pooling_dims: Optional[Tuple[int, ...]] = None,
-        post_pooling_dims: Optional[Tuple[int, ...]] = None,
+        pre_pooling_dims: tuple[int, ...] | None = None,
+        post_pooling_dims: tuple[int, ...] | None = None,
         dropout: float = 0.2,
     ):
         super().__init__()
@@ -161,7 +163,7 @@ class Swem(nn.Module):
         )
 
     @classmethod
-    def from_config(cls, config: Union[SwemConfig, Dict[str, Any]]) -> "Swem":
+    def from_config(cls, config: SwemConfig | dict[str, Any]) -> "Swem":
         """Construct a SWEM-model from a config.
 
         Instead of a config the user can also provide a dictionary representation of
@@ -230,7 +232,7 @@ class Swem(nn.Module):
             dropout=config.dropout,
         )
 
-    def save(self, path: Union[str, Path]):
+    def save(self, path: str | Path):
         """Save this model to disk.
 
         The model will be stored to the directory given by the path as two files
@@ -273,7 +275,7 @@ class Swem(nn.Module):
         torch.save(self.state_dict(), path / "weights.pt")
 
     @classmethod
-    def load(cls, path: Union[str, Path]) -> "Swem":
+    def load(cls, path: str | Path) -> "Swem":
         """Load a model that was previously saved on disk.
 
         Args:

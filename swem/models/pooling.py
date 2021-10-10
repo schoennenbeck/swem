@@ -1,6 +1,8 @@
 """A collection of pooling layers with a common API."""
+from __future__ import annotations
+
 from dataclasses import dataclass
-from typing import Dict, Literal, Optional, Union
+from typing import Literal
 
 import torch
 from torch import nn
@@ -13,8 +15,8 @@ class PoolingConfig:
     type: Literal[
         "HierarchicalPooling", "AttentionPooling", "MaxPooling", "MeanPooling"
     ]
-    window_size: Optional[int] = None
-    input_dim: Optional[int] = None
+    window_size: int | None = None
+    input_dim: int | None = None
 
     def __post_init__(self):
         assert self.type in [
@@ -29,7 +31,7 @@ class PoolingConfig:
             raise ValueError("Type 'AttentionPooling' but no input_dim given.")
 
     @classmethod
-    def from_dict(cls, d: Dict[str, Union[str, int]]) -> "PoolingConfig":
+    def from_dict(cls, d: dict[str, str | int]) -> "PoolingConfig":
         return cls(**d)
 
 
@@ -37,15 +39,13 @@ class SwemPoolingLayer(nn.Module):
     """Base class for all pooling layers."""
 
     def forward(
-        self, input: torch.FloatTensor, mask: Optional[torch.FloatTensor] = None
+        self, input: torch.FloatTensor, mask: torch.FloatTensor | None = None
     ) -> torch.FloatTensor:
         """The pooling computation. This should be overridden by subclasses."""
         raise NotImplementedError()
 
     @staticmethod
-    def from_config(
-        config: Union[PoolingConfig, Dict[str, Union[str, int]]]
-    ) -> "SwemPoolingLayer":
+    def from_config(config: PoolingConfig | dict[str, str | int]) -> "SwemPoolingLayer":
         """Construct a pooling layer from the config.
 
         Instead of a pooling config the user can also provide a dictionary
@@ -101,7 +101,7 @@ class HierarchicalPooling(SwemPoolingLayer):
         return PoolingConfig(type="HierarchicalPooling", window_size=self.window_size)
 
     def forward(
-        self, input: torch.FloatTensor, mask: Optional[torch.FloatTensor] = None
+        self, input: torch.FloatTensor, mask: torch.FloatTensor | None = None
     ) -> torch.FloatTensor:
         """Pooling forward pass."""
 
@@ -134,7 +134,7 @@ class MeanPooling(SwemPoolingLayer):
         return PoolingConfig(type="MeanPooling")
 
     def forward(
-        self, input: torch.FloatTensor, mask: Optional[torch.FloatTensor] = None
+        self, input: torch.FloatTensor, mask: torch.FloatTensor | None = None
     ) -> torch.FloatTensor:
         """Pooling forward pass."""
 
@@ -167,7 +167,7 @@ class MaxPooling(SwemPoolingLayer):
         return PoolingConfig(type="MaxPooling")
 
     def forward(
-        self, input: torch.FloatTensor, mask: Optional[torch.FloatTensor] = None
+        self, input: torch.FloatTensor, mask: torch.FloatTensor | None = None
     ) -> torch.FloatTensor:
         """Pooling forward pass."""
 
@@ -209,7 +209,7 @@ class AttentionPooling(SwemPoolingLayer):
         )
 
     def forward(
-        self, input: torch.FloatTensor, mask: Optional[torch.FloatTensor] = None
+        self, input: torch.FloatTensor, mask: torch.FloatTensor | None = None
     ) -> torch.FloatTensor:
         """Pooling forward pass."""
         attention_logits = self.attention_trafo(input).squeeze(-1)

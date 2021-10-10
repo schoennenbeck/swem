@@ -1,6 +1,7 @@
 """Implementation of certain useful metrics."""
+from __future__ import annotations
+
 import json
-from typing import Dict, List, Optional, Union
 
 import torch
 
@@ -74,7 +75,7 @@ class ClassificationReport:
 
     def __init__(
         self,
-        target_names: Optional[List[Union[str, int]]] = None,
+        target_names: list[str | int] | None = None,
         binary: bool = False,
         from_probas: bool = False,
     ):
@@ -99,9 +100,7 @@ class ClassificationReport:
 
     def get(
         self,
-    ) -> Optional[
-        Dict[str, Union[int, float, Dict[Union[int, str], Dict[str, Optional[float]]]]]
-    ]:
+    ) -> dict[str, int | float | dict] | None:
         """Get the current state of all tracked metrics."""
         if self.num_samples == 0:
             return None
@@ -123,7 +122,7 @@ class ClassificationReport:
         self,
         logits: "array_like",
         labels: "array_like",
-        mask: Optional["array_like"] = None,
+        mask: "array_like" | None = None,
     ):
         """Update the tracked metrics with the results from a new batch.
 

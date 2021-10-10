@@ -1,7 +1,8 @@
 """Some useful helper classes."""
 
+from __future__ import annotations
+
 from dataclasses import dataclass
-from typing import Optional, Union
 
 
 class KeyDependentDefaultdict(dict):
@@ -65,7 +66,7 @@ class ClfMetricTracker:
 
     """
 
-    name: Optional[Union[str, int]] = None
+    name: str | int | None = None
     tp: int = 0
     fp: int = 0
     fn: int = 0
@@ -80,19 +81,19 @@ class ClfMetricTracker:
         return self.tp + self.fn
 
     @property
-    def recall(self) -> Optional[float]:
+    def recall(self) -> float | None:
         if self.support == 0:
             return None
         return self.tp / self.support
 
     @property
-    def precision(self) -> Optional[float]:
+    def precision(self) -> float | None:
         if self.tp + self.fp == 0:
             return None
         return self.tp / (self.tp + self.fp)
 
     @property
-    def f1_score(self) -> Optional[float]:
+    def f1_score(self) -> float | None:
         if not self.recall or not self.precision:
             return None
         return 2 * self.recall * self.precision / (self.recall + self.precision)

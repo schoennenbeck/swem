@@ -1,6 +1,8 @@
 """Embedding layer with word-drop regularization."""
+from __future__ import annotations
+
 from dataclasses import dataclass
-from typing import Any, Dict, Literal, Optional
+from typing import Any, Literal
 
 import torch
 from torch import nn
@@ -12,12 +14,12 @@ class EmbeddingConfig:
 
     embedding_dim: int
     num_embeddings: int
-    padding_idx: Optional[int] = None
-    max_norm: Optional[float] = None
+    padding_idx: int | None = None
+    max_norm: float | None = None
     norm_type: float = 2.0
     scale_grad_by_freq: bool = False
     sparse: bool = False
-    p: Optional[float] = None
+    p: float | None = None
     type: Literal["Embedding", "WordDropEmbedding"] = "Embedding"
 
     def __post_init__(self):
@@ -35,7 +37,7 @@ class EmbeddingConfig:
             ), f"Dropout probability must be at least 0 and strictly less than 1, got {self.p}"
 
     @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> "EmbeddingConfig":
+    def from_dict(cls, d: dict[str, Any]) -> "EmbeddingConfig":
         return cls(**d)
 
 
