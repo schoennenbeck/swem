@@ -1,5 +1,7 @@
 name: swem
-
+channels:
+  - pytorch
+  - defaults
 dependencies:
-  - python>=3.8
-  - torch>=1
+  - python=3.8
+  - pytorch=1.9
