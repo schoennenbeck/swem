@@ -1,0 +1,5 @@
+name: swem
+
+dependencies:
+  - python>=3.8
+  - torch>=1
