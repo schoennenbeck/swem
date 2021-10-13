@@ -6,4 +6,4 @@ dependencies:
   - python=3.8
   - pytorch=1.9
   - numpy
-  - swem
+  - swem=0.3.4
