@@ -1,7 +1,9 @@
-name: swem
+name: pytorch-swem
 channels:
   - pytorch
   - defaults
 dependencies:
   - python=3.8
   - pytorch=1.9
+  - numpy
+  - swem
