@@ -7,4 +7,4 @@ dependencies:
   - pytorch=1.9
   - numpy
    pip:
-    - swem=0.3.4
+    - swem==0.3.4
