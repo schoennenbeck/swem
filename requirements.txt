@@ -1,3 +1,0 @@
-torch>=1.9
-numpy
-pytorch-swem==0.3.4
