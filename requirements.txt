@@ -1,5 +1,4 @@
-python==3.8
-pytorch==1.9
+python>=3.8
+torch==1.9
 numpy
-pip
 swem==0.3.4
