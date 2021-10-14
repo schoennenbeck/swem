@@ -1,0 +1,11 @@
+name: pytorch-swem
+channels:
+  - pytorch
+  - defaults
+dependencies:
+  - python==3.8
+  - pytorch==1.9.1
+  - numpy
+  - pip
+  - pip:
+    - pytorch-swem==0.3.4
