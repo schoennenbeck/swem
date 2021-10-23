@@ -24,9 +24,12 @@ class TestKeyDependentDefaultdict:
 
         assert d["a"].name == "a"
         assert d["a"].support == 0
-        assert d["a"].recall is None
-        assert d["a"].precision is None
-        assert d["a"].f1_score is None
+        with pytest.warns(UserWarning):
+            assert d["a"].recall == 0
+        with pytest.warns(UserWarning):
+            assert d["a"].precision == 0
+        with pytest.warns(UserWarning):
+            assert d["a"].f1_score == 0
 
         d["a"].tp += 1
         d["a"].fp += 1

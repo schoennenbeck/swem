@@ -34,6 +34,12 @@ class ClassificationReport:
         {
             "num_samples": 3,
             "accuracy": 0.3333333333333333,
+            "recall_macro_avg": 0.25,
+            "recall_weighted_avg": 0.3333333333333333,
+            "precision_macro_avg": 0.25,
+            "precision_weighted_avg": 0.3333333333333333,
+            "f1_score_macro_avg": 0.25,
+            "f1_score_weighted_avg": 0.3333333333333333,
             "class_metrics": {
                 "A": {
                 "support": 2,
@@ -45,7 +51,7 @@ class ClassificationReport:
                 "support": 1,
                 "recall": 0.0,
                 "precision": 0.0,
-                "f1_score": null
+                "f1_score": 0
                 }
             }
         }
@@ -56,6 +62,12 @@ class ClassificationReport:
         {
             "num_samples": 2,
             "accuracy": 0.5,
+            "recall_macro_avg": 0.25,
+            "recall_weighted_avg": 0.5,
+            "precision_macro_avg": 0.5,
+            "precision_weighted_avg": 1.0,
+            "f1_score_macro_avg": 0.3333333333333333,
+            "f1_score_weighted_avg": 0.6666666666666666,
             "class_metrics": {
                 "A": {
                 "support": 2,
@@ -65,9 +77,9 @@ class ClassificationReport:
                 },
                 "B": {
                 "support": 0,
-                "recall": null,
+                "recall": 0,
                 "precision": 0.0,
-                "f1_score": null
+                "f1_score": 0
                 }
             }
         }
@@ -104,9 +116,38 @@ class ClassificationReport:
         """Get the current state of all tracked metrics."""
         if self.num_samples == 0:
             return None
+
+        accuracy: float = self.num_correct / self.num_samples
+        precision_macro_avg: float = sum(
+            met.precision for met in self.class_metrics.values()
+        ) / len(self.class_metrics)
+        precision_weighted_avg: float = (
+            sum(met.precision * met.support for met in self.class_metrics.values())
+            / self.num_samples
+        )
+        recall_macro_avg: float = sum(
+            met.recall for met in self.class_metrics.values()
+        ) / len(self.class_metrics)
+        recall_weighted_avg: float = (
+            sum(met.recall * met.support for met in self.class_metrics.values())
+            / self.num_samples
+        )
+        f1_score_macro_avg: float = sum(
+            met.f1_score for met in self.class_metrics.values()
+        ) / len(self.class_metrics)
+        f1_score_weighted_avg: float = (
+            sum(met.f1_score * met.support for met in self.class_metrics.values())
+            / self.num_samples
+        )
         return {
             "num_samples": self.num_samples,
-            "accuracy": self.num_correct / self.num_samples,
+            "accuracy": accuracy,
+            "recall_macro_avg": recall_macro_avg,
+            "recall_weighted_avg": recall_weighted_avg,
+            "precision_macro_avg": precision_macro_avg,
+            "precision_weighted_avg": precision_weighted_avg,
+            "f1_score_macro_avg": f1_score_macro_avg,
+            "f1_score_weighted_avg": f1_score_weighted_avg,
             "class_metrics": {
                 name: {
                     "support": met.support,

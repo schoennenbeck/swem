@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import warnings
 from dataclasses import dataclass
 
 
@@ -81,19 +82,24 @@ class ClfMetricTracker:
         return self.tp + self.fn
 
     @property
-    def recall(self) -> float | None:
+    def recall(self) -> float:
         if self.support == 0:
-            return None
+            warnings.warn(f"Recall is ill-defined with empty support, defaulting to 0.")
+            return 0
         return self.tp / self.support
 
     @property
-    def precision(self) -> float | None:
+    def precision(self) -> float:
         if self.tp + self.fp == 0:
-            return None
+            warnings.warn(
+                f"Precision is ill-defined without positive predictions, defaulting to 0."
+            )
+            return 0
         return self.tp / (self.tp + self.fp)
 
     @property
-    def f1_score(self) -> float | None:
-        if not self.recall or not self.precision:
-            return None
+    def f1_score(self) -> float:
+        if self.recall + self.precision == 0:
+            warnings.warn("Both recall and precision are 0, defaulting to f1_score 0.")
+            return 0
         return 2 * self.recall * self.precision / (self.recall + self.precision)
