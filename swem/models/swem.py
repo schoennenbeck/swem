@@ -102,8 +102,8 @@ class Swem(nn.Module):
         else:
             pre_dims = [embedding.embedding_dim, *pre_pooling_dims]
             self.pre_pooling_trafo = nn.Sequential(
-                *chain(
-                    *[
+                *chain.from_iterable(
+                    [
                         (nn.Linear(dim_in, dim_out), nn.ReLU(), nn.Dropout(dropout))
                         for dim_in, dim_out in zip(pre_dims[:-1], pre_dims[1:])
                     ]
@@ -123,8 +123,8 @@ class Swem(nn.Module):
             else:
                 post_dims = [pooling_dim, *post_pooling_dims[:-1]]
                 self.post_pooling_trafo = nn.Sequential(
-                    *chain(
-                        *[
+                    *chain.from_iterable(
+                        [
                             (nn.Linear(dim_in, dim_out), nn.ReLU(), nn.Dropout(dropout))
                             for dim_in, dim_out in zip(post_dims[:-1], post_dims[1:])
                         ]
