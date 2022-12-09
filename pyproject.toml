@@ -12,7 +12,7 @@ packages = [{include = "swem"}]
 
 [tool.poetry.dependencies]
 python = "^3.8"
-torch = "^1"
+torch = ">=1"
 
 [tool.poetry.group.dev.dependencies]
 black = "*"
