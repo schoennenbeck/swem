@@ -27,6 +27,7 @@ setup(
             "pytest-cov",
             "coveralls",
             "coverage",
+            "ruff",
         ],
         "docs": [
             "sphinx",
