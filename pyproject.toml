@@ -1,3 +1,42 @@
+[tool.poetry]
+name = "pytorch-swem"
+version = "0.3.5"
+description = "Pytorch implementation of the simple word embedding model."
+authors = ["Sebastian Schönnenbeck <schoennenbeck@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/schoennenbeck/swem"
+documentation = "https://pytorch-swem.readthedocs.io/"
+keywords = ["nlp", "deep-learning", "pytorch", "torch", "swem"]
+packages = [{include = "swem"}]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+torch = "^1"
+
+[tool.poetry.group.dev.dependencies]
+black = "*"
+isort = "*"
+mypy = "*"
+pre-commit = "*"
+pytest = "*"
+pytest-cov = "*"
+coveralls = "*"
+coverage = "*"
+ruff = "*"
+bump2version = "*"
+
+[tool.poetry.group.docs.dependencies]
+sphinx = "*"
+myst-parser = "*"
+nbsphinx = "*"
+sphinx-rtd-theme = "*"
+sphinx-autodoc-typehints = "*"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
 [tool.black]
 line-length = 88
 target-version = ["py38"]
@@ -26,3 +65,6 @@ ignore_missing_imports = true
 target-version = "py38"
 ignore = ["E501"]
 select = ["E", "F", "UP", "N"]
+
+
+
