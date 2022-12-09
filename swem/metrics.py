@@ -161,9 +161,9 @@ class ClassificationReport:
 
     def update(
         self,
-        logits: "array_like",
-        labels: "array_like",
-        mask: "array_like" | None = None,
+        logits: "array_like",  # noqa: F821
+        labels: "array_like",  # noqa: F821
+        mask: "array_like" | None = None,  # noqa: F821
     ):
         """Update the tracked metrics with the results from a new batch.
 

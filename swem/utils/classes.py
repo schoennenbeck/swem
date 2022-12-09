@@ -84,7 +84,7 @@ class ClfMetricTracker:
     @property
     def recall(self) -> float:
         if self.support == 0:
-            warnings.warn(f"Recall is ill-defined with empty support, defaulting to 0.")
+            warnings.warn("Recall is ill-defined with empty support, defaulting to 0.")
             return 0
         return self.tp / self.support
 
@@ -92,7 +92,7 @@ class ClfMetricTracker:
     def precision(self) -> float:
         if self.tp + self.fp == 0:
             warnings.warn(
-                f"Precision is ill-defined without positive predictions, defaulting to 0."
+                "Precision is ill-defined without positive predictions, defaulting to 0."
             )
             return 0
         return self.tp / (self.tp + self.fp)

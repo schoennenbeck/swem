@@ -25,4 +25,4 @@ ignore_missing_imports = true
 [tool.ruff]
 target-version = "py38"
 ignore = ["E501"]
-select = ["E", "F", "U", "N"]
+select = ["E", "F", "UP", "N"]
