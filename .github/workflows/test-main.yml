@@ -30,20 +30,22 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Setup python
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.pyversion }} 
           architecture: "x64" # optional x64 or x86. Defaults to x64 if not specified
-
+      - name: Setup poetry
+        uses: abatilo/actions-poetry@v2
       # Install package and pytest
-      - name: Install
-        run: |
-          pip install .[dev]
+      - name: Install dependencies
+        run: poetry install --with dev
 
       # Run pytest
       - name: Run tests
-        run: pytest tests/
+        run: poetry run pytest tests/
 
   coverage:
     runs-on: ubuntu-latest
@@ -51,22 +53,24 @@ jobs:
 
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Setup python
+        uses: actions/setup-python@v4
         with:
-          python-version: "3.8"
+          python-version: ${{ matrix.pyversion }} 
           architecture: "x64" # optional x64 or x86. Defaults to x64 if not specified
-
+      - name: Setup poetry
+        uses: abatilo/actions-poetry@v2
       # Install package and pytest
-      - name: Install
-        run: |
-          pip install .[dev]
+      - name: Install dependencies
+        run: poetry install --with dev
 
       # Run pytest
       - name: Run tests
-        run: pytest --cov=swem tests/
+        run: poetry run pytest --cov=swem tests/
   
       - name: Publish coverage results
-        run: coveralls --service=github
+        run: poetry run coveralls --service=github
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
