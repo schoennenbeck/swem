@@ -12,7 +12,7 @@ packages = [{include = "swem"}]
 
 [tool.poetry.dependencies]
 python = "^3.8"
-torch = {version = ">=1.0", source = "torch"}
+torch = ">=1.0"
 
 [tool.poetry.group.dev.dependencies]
 black = "*"
@@ -32,14 +32,6 @@ myst-parser = "*"
 nbsphinx = "*"
 sphinx-rtd-theme = "*"
 sphinx-autodoc-typehints = "*"
-
-
-
-[[tool.poetry.source]]
-name = "torch"
-url = "https://download.pytorch.org/whl/cpu"
-default = false
-secondary = true
 
 [build-system]
 requires = ["poetry-core"]
